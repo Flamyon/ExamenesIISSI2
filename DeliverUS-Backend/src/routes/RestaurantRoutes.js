@@ -7,7 +7,7 @@ import { handleValidation } from '../middlewares/ValidationHandlingMiddleware.js
 import { checkEntityExists } from '../middlewares/EntityMiddleware.js'
 import * as RestaurantMiddleware from '../middlewares/RestaurantMiddleware.js'
 import { handleFilesUpload } from '../middlewares/FileHandlerMiddleware.js'
-import { Restaurant } from '../models/models.js'
+import { Restaurant, Staff } from '../models/models.js'
 
 const loadFileRoutes = function (app) {
   app.route('/restaurants')
@@ -62,5 +62,28 @@ const loadFileRoutes = function (app) {
       checkEntityExists(Restaurant, 'restaurantId'),
       RestaurantMiddleware.checkRestaurantOwnership,
       OrderController.analytics)
+  app.route('/restaurants/:restaurantId/staff')
+    .post(
+      isLoggedIn,
+      hasRole('owner'),
+      checkEntityExists(Restaurant, 'restaurantId'),
+      RestaurantMiddleware.checkRestaurantOwnership,
+      RestaurantValidation.createStaff,
+      handleValidation,
+      RestaurantController.createStaff)
+    .get(
+      isLoggedIn,
+      hasRole('owner'),
+      checkEntityExists(Restaurant, 'restaurantId'),
+      RestaurantMiddleware.checkRestaurantOwnership,
+      RestaurantController.getStaffs)
+  app.route('/restaurants/:restaurantId/staff/:staffId')
+    .delete(
+      isLoggedIn,
+      hasRole('owner'),
+      checkEntityExists(Restaurant, 'restaurantId'),
+      checkEntityExists(Staff, 'staffId'),
+      RestaurantMiddleware.checkRestaurantOwnership,
+      RestaurantController.destroyStaff)
 }
 export default loadFileRoutes

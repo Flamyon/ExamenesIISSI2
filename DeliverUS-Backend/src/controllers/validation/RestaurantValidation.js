@@ -50,5 +50,10 @@ const update = [
     return checkFileMaxSize(req, 'logo', maxFileSize)
   }).withMessage('Maximum file size of ' + maxFileSize / 1000000 + 'MB')
 ]
+const createStaff = [
+  check('name').exists().isString().isLength({ min: 1, max: 255 }).trim(),
+  check('email').optional({ nullable: true, checkFalsy: true }).isString().isEmail().trim()
 
-export { create, update }
+]
+
+export { create, update, createStaff }

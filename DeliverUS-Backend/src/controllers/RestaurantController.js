@@ -1,4 +1,4 @@
-import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../models/models.js'
+import { Restaurant, Product, RestaurantCategory, ProductCategory, Staff } from '../models/models.js'
 
 const index = async function (req, res) {
   try {
@@ -95,12 +95,53 @@ const destroy = async function (req, res) {
   }
 }
 
+const createStaff = async function (req, res) {
+  const staff = Staff.build(req.body)
+  try {
+    const restaurant = await staff.save()
+    res.json(restaurant)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
+const getStaffs = async function (req, res) {
+  try {
+    const staffs = await Staff.findAll({
+      where: {
+        restaurantId: req.params.restaurantId
+      }
+    })
+    res.json(staffs)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
+const destroyStaff = async function (req, res) {
+  try {
+    const result = await Staff.destroy({ where: { id: req.params.staffId } })
+    let message = ''
+    if (result === 1) {
+      message = 'Sucessfuly deleted staffid .' + req.params.staffId
+    } else {
+      message = 'Could not delete staff.'
+    }
+    res.json(message)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
 const RestaurantController = {
   index,
   indexOwner,
   create,
   show,
   update,
-  destroy
+  createStaff,
+  destroy,
+  getStaffs,
+  destroyStaff
 }
 export default RestaurantController
