@@ -9,7 +9,7 @@ const loadModel = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Schedule.belongsTo(models.Restaurant, { foreignKey: 'restaurantId', as: 'restaurant' })
-      Schedule.hasMany(models.Product, { foreignKey: 'productId', as: 'products' })
+      Schedule.hasMany(models.Product, { foreignKey: 'scheduleId', as: 'products' })
     }
   }
 

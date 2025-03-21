@@ -73,23 +73,30 @@ const show = async function (req, res) {
 }
 
 const showWithActiveProducts = async function (req, res) {
-  // const now = new Date().toTimeString().split(' ')[0]
+  const now = new Date().toTimeString().split(' ')[0]
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
+    const restaurantWithActiveProducts = await Restaurant.findByPk(req.params.restaurantId, {
       attributes: { exclude: ['userId'] },
       include: {
         model: Product,
-        as: 'products'
+        as: 'products',
+        required: true, // Solo incluir productos con horarios asociados
+        include: {
+          model: Schedule,
+          as: 'schedule',
+          required: true, // Solo incluir productos con horario asignado (excluye scheduleId=null)
+          where: {
+            startTime: { [Op.lte]: now }, // El inicio debe ser antes o igual a la hora actual
+            endTime: { [Op.gte]: now } // El fin debe ser después o igual a la hora actual
+          }
+        }
       }
     })
-    // const r =  nos quedamos solo con los productos que Schedule.startTime Op.lt now y Schedule.endTime Op.gte now
-    // restaurant.products = r
-    res.json(restaurant)
+    res.json(restaurantWithActiveProducts)
   } catch (err) {
-    res.status(500).send(err)
+    res.status(500).json({ error: err.message })
   }
 }
-
 const update = async function (req, res) {
   try {
     await Restaurant.update(req.body, { where: { id: req.params.restaurantId } })

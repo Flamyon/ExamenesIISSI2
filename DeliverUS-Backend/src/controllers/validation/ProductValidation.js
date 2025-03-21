@@ -18,7 +18,7 @@ const checkRestaurantExists = async (value, { req }) => {
 const checkScheduleBelongsToRestaurantOnCreate = async (value, { req }) => {
   try {
     const schedule = await Schedule.findByPk(value)
-    if (value && schedule.restaurantId !== req.params.restaurantId) {
+    if (value && schedule.restaurantId !== req.body.restaurantId) {
       return Promise.reject(new Error('The schedule doesnt belong to the restaurant'))
     } else { return Promise.resolve() }
   } catch (err) {
