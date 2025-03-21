@@ -616,7 +616,6 @@ describe('Get analytics restaurant', () => {
     const response = await request(app).get(`/restaurants/${restaurant.id}/analytics`).set('Authorization', `Bearer ${owner.token}`).send()
     expect(response.status).toBe(200)
   })
-  // TODO: Improve analytics tests
   afterAll(async () => {
     await shutdownApp()
   })

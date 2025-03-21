@@ -1,4 +1,6 @@
-import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../models/models.js'
+import { Restaurant, Product, RestaurantCategory, ProductCategory, Schedule } from '../models/models.js'
+
+import { Op } from 'sequelize'
 
 const index = async function (req, res) {
   try {
@@ -70,6 +72,24 @@ const show = async function (req, res) {
   }
 }
 
+const showWithActiveProducts = async function (req, res) {
+  // const now = new Date().toTimeString().split(' ')[0]
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
+      attributes: { exclude: ['userId'] },
+      include: {
+        model: Product,
+        as: 'products'
+      }
+    })
+    // const r =  nos quedamos solo con los productos que Schedule.startTime Op.lt now y Schedule.endTime Op.gte now
+    // restaurant.products = r
+    res.json(restaurant)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
 const update = async function (req, res) {
   try {
     await Restaurant.update(req.body, { where: { id: req.params.restaurantId } })
@@ -100,6 +120,7 @@ const RestaurantController = {
   indexOwner,
   create,
   show,
+  showWithActiveProducts,
   update,
   destroy
 }

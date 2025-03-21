@@ -1,12 +1,9 @@
 import request from 'supertest'
-import { jest } from '@jest/globals'
 import { shutdownApp, getApp } from './utils/testApp'
-import { getLoggedInCustomer, getLoggedInOwner, getNewLoggedInCustomer, getNewLoggedInOwner } from './utils/auth'
-import { createRestaurant, getFirstRestaurantOfOwner } from './utils/restaurant'
+import { getLoggedInCustomer, getLoggedInOwner, getNewLoggedInOwner } from './utils/auth'
+import { getFirstRestaurantOfOwner } from './utils/restaurant'
 import { createProduct, getProductAlreadyOrdered, getNewPaellaProductData } from './utils/product'
 import dotenv from 'dotenv'
-import moment from 'moment'
-import { createOrder } from './utils/order.js'
 dotenv.config()
 
 describe('Get restaurant products', () => {
